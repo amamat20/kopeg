@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Utama{% endblock %}
+{% block content %}
+
+<h2 class="mb-4">📊 Dashboard Utama</h2>
+
+<!-- 🔹 Ringkasan Statistik -->
+<div class="row">
+  <div class="col-sm-6 col-md-3">
+    <div class="card card-stats card-round">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-icon">
+            <div class="icon-big text-center icon-primary bubble-shadow-small">
+              <i class="fas fa-shopping-cart"></i>
+            </div>
+          </div>
+          <div class="col col-stats ms-3 ms-sm-0">
+            <div class="numbers">
+              <p class="card-category">Total Pembelian</p>
+              <h4 class="card-title">Rp {{ total_pembelian|floatformat:0 }}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-md-3">
+    <div class="card card-stats card-round">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-icon">
+            <div class="icon-big text-center icon-success bubble-shadow-small">
+              <i class="fas fa-luggage-cart"></i>
+            </div>
+          </div>
+          <div class="col col-stats ms-3 ms-sm-0">
+            <div class="numbers">
+              <p class="card-category">Total Penjualan</p>
+              <h4 class="card-title">Rp {{ total_penjualan|floatformat:0 }}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-md-3">
+    <div class="card card-stats card-round">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-icon">
+            <div class="icon-big text-center icon-warning bubble-shadow-small">
+              <i class="fas fa-undo"></i>
+            </div>
+          </div>
+          <div class="col col-stats ms-3 ms-sm-0">
+            <div class="numbers">
+              <p class="card-category">Total Retur</p>
+              <h4 class="card-title">Rp {{ total_retur|floatformat:0 }}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-md-3">
+    <div class="card card-stats card-round">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-icon">
+            <div class="icon-big text-center icon-info bubble-shadow-small">
+              <i class="fas fa-chart-line"></i>
+            </div>
+          </div>
+          <div class="col col-stats ms-3 ms-sm-0">
+            <div class="numbers">
+              <p class="card-category">Total Keuntungan</p>
+              <h4 class="card-title">Rp {{ total_keuntungan|floatformat:0 }}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🔹 Grafik Keuntungan per Bulan -->
+<div class="card mt-4">
+  <div class="card-header">
+    <h4 class="card-title">Grafik Keuntungan per Bulan</h4>
+  </div>
+  <div class="card-body">
+    <canvas id="keuntunganChart" height="120"></canvas>
+  </div>
+</div>
+
+<!-- Kirim data chart ke JS dengan aman -->
+{{ chart_data|json_script:"chart-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Ambil data JSON yang dikirim dari Django
+  const chartData = JSON.parse(document.getElementById("chart-data").textContent);
+
+  if (!chartData || chartData.length === 0) {
+    console.warn("⚠️ Tidak ada data untuk grafik");
+    return;
+  }
+
+  const ctx = document.getElementById('keuntunganChart');
+  const labels = chartData.map(d => d.bulan);
+  const data = chartData.map(d => d.keuntungan);
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Keuntungan Bulanan',
+        data: data,
+        borderColor: '#4CAF50',
+        backgroundColor: 'rgba(76, 175, 80, 0.2)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+        title: { display: true, text: 'Grafik Keuntungan Bulanan' }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+});
+</script>
+
+{% endblock %}

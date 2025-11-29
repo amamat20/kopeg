@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Edit Data Penjualan</h2>
+<form method="post">
+  {% csrf_token %}
+  <input type="text" name="Kode_Item" value="{{ penjualan.Kode_Item }}" class="form-control mb-2" required>
+  <input type="text" name="Nama_Item" value="{{ penjualan.Nama_Item }}" class="form-control mb-2" required>
+  <input type="text" name="Jenis" value="{{ penjualan.Jenis }}" class="form-control mb-2" required>
+  <input type="number" name="Jumlah" value="{{ penjualan.Jumlah }}" class="form-control mb-2" required>
+  <input type="text" name="Satuan" value="{{ penjualan.Satuan }}" class="form-control mb-2" required>
+  <input type="number" name="Total_Harga" value="{{ penjualan.Total_Harga }}" class="form-control mb-2" required>
+  <input type="text" name="Bulan" value="{{ penjualan.Bulan }}" class="form-control mb-2" required>
+  <input type="text" name="Tahun" value="{{ penjualan.Tahun }}" class="form-control mb-2" required>
+
+  <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+  <a href="{% url 'get_all_penjualan' %}" class="btn btn-secondary">Batal</a>
+</form>
+{% endblock %}

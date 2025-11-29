@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Edit Data Retur</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <input type="text" name="Kode_Item" value="{{ retur.Kode_Item }}" class="form-control mb-2" required>
+  <input type="text" name="Nama_Item" value="{{ retur.Nama_Item }}" class="form-control mb-2" required>
+  <input type="number" name="Jml" value="{{ retur.Jml }}" class="form-control mb-2" required>
+  <input type="text" name="Satuan" value="{{ retur.Satuan }}" class="form-control mb-2" required>
+  <input type="number" name="Harga" value="{{ retur.Harga }}" class="form-control mb-2" required>
+  <input type="number" name="Potongan" value="{{ retur.Potongan }}" class="form-control mb-2" required>
+  <input type="number" name="Total_Harga" value="{{ retur.Total_Harga }}" class="form-control mb-2" required>
+  <input type="text" name="Bulan" value="{{ retur.Bulan }}" class="form-control mb-2" required>
+  <input type="text" name="Tahun" value="{{ retur.Tahun }}" class="form-control mb-2" required>
+
+  <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+  <a href="{% url 'get_all_retur' %}" class="btn btn-secondary">Batal</a>
+</form>
+{% endblock %}

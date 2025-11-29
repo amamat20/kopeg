@@ -1,0 +1,117 @@
+{% extends 'base_part.html' %}
+{% load static %}
+
+{% block title %}Daftar part{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1 class="mb-4">List part</h1>
+
+    <!-- Search bar fungsi -->
+<form method="GET" action="{% url 'get_all_part' %}" class="row g-3 mb-4 align-items-center">
+    
+    <div class="col-auto">
+        <label for="filter_supplier" class="visually-hidden">Supplier</label>
+        <select name="filter_supplier" id="filter_supplier" class="form-select">
+            <option value="">Semua Supplier</option>
+            {% for supplier in unique_supplier %}
+                <option value="{{ supplier }}" {% if supplier == request.GET.filter_supplier %}selected{% endif %}>
+                    {{ supplier }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-auto">
+        <label for="filter_kondisi" class="visually-hidden">Kondisi</label>
+        <select name="filter_kondisi" id="filter_kondisi" class="form-select">
+            <option value="">Semua Kondisi</option>
+            {% for kondisi in unique_kondisi %}
+                <option value="{{ kondisi }}" {% if kondisi == request.GET.filter_kondisi %}selected{% endif %}>
+                    {{ kondisi }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-auto">
+        <button type="submit" class="btn btn-info">Filter</button>
+        <a href="{% url 'get_all_part' %}" class="btn btn-secondary">Reset</a>
+    </div>
+</form>
+{% if filtered_count < total_count %}
+    <p>
+        Menampilkan <strong>{{ filtered_count }}</strong> data yang cocok dari total <strong>{{ total_count }}</strong> data.
+    </p>
+{% else %}
+    <p>
+        Menampilkan semua <strong>{{ total_count }}</strong> data.
+    </p>
+{% endif %}
+
+    <a href="{% url 'add_part' %}" class="btn btn-success mb-3">
+      Tambah Orang
+    </a>
+
+    <table class="table table-striped">
+  <thead class="table-dark">
+  <tr>
+    <th>Foto</th>
+    
+    <th>
+      <a href="?sort={% if current_sort == 'nama' %}-nama{% else %}nama{% endif %}&{{ request.GET.urlencode | cut:'sort' }}" class="text-white text-decoration-none">
+        Nama Part
+        {% if 'nama' in current_sort %}
+          <i class="fas fa-sort-{% if current_sort.0 == '-' %}down{% else %}up{% endif %}"></i>
+        {% endif %}
+      </a>
+    </th>
+
+    <th>
+      <a href="?sort={% if current_sort == 'harga' %}-harga{% else %}harga{% endif %}&{{ request.GET.urlencode | cut:'sort' }}" class="text-white text-decoration-none">
+        Harga
+        {% if 'harga' in current_sort %}
+          <i class="fas fa-sort-{% if current_sort.0 == '-' %}down{% else %}up{% endif %}"></i>
+        {% endif %}
+      </a>
+    </th>
+
+    <th>
+      <a href="?sort={% if current_sort == 'stok' %}-stok{% else %}stok{% endif %}&{{ request.GET.urlencode | cut:'sort' }}" class="text-white text-decoration-none">
+        Stok
+        {% if 'stok' in current_sort %}
+          <i class="fas fa-sort-{% if current_sort.0 == '-' %}down{% else %}up{% endif %}"></i>
+        {% endif %}
+      </a>
+    </th>
+
+    <th>Supplier</th>
+    <th>Kondisi</th>
+    <th>Aksi</th>
+  </tr>
+</thead>
+  <tbody>
+    {% for part in parts %}
+    <tr>
+      <td>
+        {% if part.foto_part %}
+          <img src="/{{ part.foto_part }}" alt="Foto {{ part.nama }}" width="100">
+        {% else %}
+          <span class="text-muted">No Image</span>
+        {% endif %}
+      </td>
+      <td>{{ part.nama }}</td>
+      <td>{{ part.harga }}</td>
+      <td>{{ part.stok }}</td>
+      <td>{{ part.supplier }}</td>
+      <td>{{ part.kondisi }}</td>
+      <td>
+        <a href="{% url 'edit_part' part.id %}" class="btn btn-primary btn-sm">Edit</a>
+        <a href="{% url 'delete_part' part.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?');">Hapus</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+  </div>
+{% endblock %}

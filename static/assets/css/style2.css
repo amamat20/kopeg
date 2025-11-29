@@ -1,0 +1,405 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: #333;
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, #03003d, #000272); 
+    padding: 15px 50px;
+    color: white;
+}
+
+.navbar .logo {
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #0300a6;
+}
+
+/* HERO SECTION */
+.hero {
+    background: linear-gradient(rgba(0, 2, 65, 0.4), rgba(2, 0, 63, 0.4)),
+                url("../img/ChatGPT.png") center/cover no-repeat;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    padding: 0 20px;
+}
+
+
+.hero-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  width: 100%;
+  gap: 60px;
+}
+
+/* --- Tulisan di kiri --- */
+.hero-text {
+  flex: 1;
+  text-align: left;
+  color: #ffffff;
+}
+
+.hero-text h1 {
+  font-size: 2.6rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.3;
+}
+
+.hero-text p {
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+.hero-text .btn {
+  background-color: #00bfa6;
+  color: #ffffff;
+  padding: 12px 30px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+
+.hero-text .btn:hover {
+  background-color: #0c0049;
+}
+
+/* --- Gambar di kanan --- */
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-image img {
+  width: 100%;
+  max-width: 480px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  object-fit: cover;
+}
+
+/* --- Responsif untuk HP --- */
+@media (max-width: 900px) {
+  .hero-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .hero-text {
+    text-align: center;
+  }
+
+  .hero-image img {
+    max-width: 350px;
+  }
+}
+
+.btn {
+  background-color: #00ffbb;
+  color: #ffffff;
+  padding: 10px 25px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 5px;
+  display: inline-block;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background-color: #070056;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* SECTION */
+section {
+    padding: 60px 50px;
+    text-align: center;
+}
+
+.tentang, .layanan, .kontak {
+    max-width: 1000px;
+    margin: auto;
+}
+
+/* LAYANAN CARDS */
+.layanan-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 25px;
+    width: 280px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* FOOTER */
+footer {
+    background: linear-gradient(to right, #03003d, #000272); 
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 0.9rem;
+}
+
+/* Gambar di atas Tentang Kami */
+.tentang-image img {
+    width: 100%;
+    height: 400px; /* bisa disesuaikan */
+    object-fit: cover; /* agar gambar tidak terdistorsi */
+    display: block;
+    margin: 0;
+}
+
+/* ================= PRODUK ================= */
+.produk {
+  padding: 60px 20px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.produk h2 {
+  color: #001f54;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.produk-controls {
+  margin-bottom: 25px;
+}
+
+.search-box {
+  width: 280px;
+  padding: 10px 14px;
+  border-radius: 22px;
+  border: 1px solid #ccd6f6;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+/* Wrapper untuk slider */
+.produk-slider-wrapper {
+  overflow: hidden;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Jalur produk (auto-geser) */
+.produk-track {
+  display: flex;
+  gap: 18px;
+  animation: slide 35s linear infinite;
+}
+
+.produk-card {
+  flex: 0 0 auto;
+  width: 250px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 32, 64, 0.08);
+  padding: 15px;
+  transition: transform 0.3s ease;
+}
+
+.produk-card:hover {
+  transform: translateY(-6px);
+}
+
+.produk-card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.produk-card h3 {
+  color: #002e73;
+  margin: 10px 0 5px;
+  font-size: 1.05rem;
+}
+
+.produk-card p {
+  color: #5a6782;
+  font-size: 0.9rem;
+  min-height: 45px;
+}
+
+.harga {
+  display: block;
+  margin-top: 8px;
+  font-weight: 700;
+  color: #0078ff;
+}
+
+/* 🔁 Animasi infinite scroll */
+@keyframes slide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* 🔸 Pause saat di-hover */
+.produk-track:hover {
+  animation-play-state: paused;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .produk-card {
+    width: 220px;
+  }
+}
+
+/* ---------- LOKASI ---------- */
+.lokasi { padding: 50px 20px; background:#fff; text-align:center; }
+.lokasi h2 { color:#00214d }
+.lokasi-map { max-width:900px; margin:16px auto; border-radius:12px; overflow:hidden; box-shadow:0 8px 30px rgba(2,9,27,0.06) }
+
+/* ---------- AGENDA ---------- */
+.agenda { padding:50px 20px; background:#f0f8ff; text-align:center; }
+.agenda-grid { display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-top:18px; }
+.agenda-item { background:#fff; padding:18px; border-radius:12px; width:280px; box-shadow:0 6px 18px rgba(2,9,27,0.06); text-align:left }
+.agenda-item time { display:block; color:#7a8aa3; font-size:0.9rem; margin-bottom:8px }
+.agenda-item h3 { color:#012341; margin-bottom:6px; font-size:1.05rem }
+
+/* ---------- BERITA ---------- */
+.berita { padding:50px 20px; background:#fff; text-align:center; }
+.berita-grid { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin-top:18px; }
+.berita-card { width:320px; background:#f7f9ff; border-radius:12px; overflow:hidden; box-shadow:0 6px 18px rgba(2,9,27,0.06) }
+.berita-card img { width:100%; height:160px; object-fit:cover }
+.berita-body { padding:14px }
+.read-more { display:inline-block; margin-top:8px; color:#0066cc; text-decoration:none; font-weight:600 }
+
+/* ---------- LAPORAN & STATISTIK ---------- */
+.laporan { padding:50px 20px; background:#eef6ff; text-align:center; }
+.stats-cards { display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-top:18px }
+.stat-card { background:#fff; width:300px; padding:18px; border-radius:12px; box-shadow:0 6px 18px rgba(2,9,27,0.06) }
+.stat-number { font-size:1.25rem; color:#02315f; margin:8px 0; font-weight:700 }
+.bar { height:10px; background:#e9f2ff; border-radius:10px; overflow:hidden; margin:8px 0 6px }
+.bar-fill { height:100%; background: linear-gradient(90deg,#00bfa6,#0077ff); border-radius:10px }
+
+/* small-screen adjustments */
+@media (max-width:900px){
+  .produk-slider { padding-bottom:12px }
+  .arrow { width:36px; height:36px; font-size:18px }
+  .agenda-item, .berita-card, .stat-card { width:100%; max-width:420px }
+}
+
+/* 🔹 Lokasi */
+.lokasi {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #f8f9fc;
+}
+
+.lokasi-box {
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+.lokasi-box img {
+    width: 100%;
+    max-height: 400px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+/* 🔹 Bagian Satgas */
+.satgas {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #ffffff;
+}
+
+.satgas h2 {
+    color: #003366;
+    font-size: 1.8rem;
+    margin-bottom: 40px;
+}
+
+.satgas-logos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.satgas-logos img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    filter: grayscale(30%);
+}
+
+.satgas-logos img:hover {
+    transform: scale(1.1);
+    filter: grayscale(0%);
+}
+
+@media (max-width: 768px) {
+    .satgas-logos img {
+        width: 70px;
+        height: 70px;
+    }
+}

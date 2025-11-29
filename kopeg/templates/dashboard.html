@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Bulanan{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📊 Dashboard Keuangan Bulanan</h2>
+
+<form method="get" class="mb-4">
+  <div class="row g-2">
+    <div class="col-auto">
+      <select name="bulan" class="form-select" required>
+        <option value="">-- Pilih Bulan --</option>
+        {% for b in daftar_bulan %}
+          <option value="{{ b }}" {% if bulan_terpilih == b %}selected{% endif %}>{{ b }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-auto">
+      <select name="tahun" class="form-select" required>
+        <option value="">-- Pilih Tahun --</option>
+        {% for t in daftar_tahun %}
+          <option value="{{ t }}" {% if tahun_terpilih == t %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Tampilkan</button>
+    </div>
+  </div>
+</form>
+{% if bulan_terpilih and tahun_terpilih %}
+<form method="post" onsubmit="return confirm('Yakin ingin menghapus semua data bulan {{ bulan_terpilih }}?');">
+  {% csrf_token %}
+  <input type="hidden" name="hapus_bulan" value="{{ bulan_terpilih }}">
+  <input type="hidden" name="hapus_tahun" value="{{ tahun_terpilih }}">
+
+  <button type="submit" class="btn btn-danger mb-4">🗑️ Hapus Semua Data Bulan {{ bulan_terpilih }}</button>
+</form>
+
+<!-- Tambahan tombol ekspor data -->
+<form method="get" action="{% url 'export_data_csv' %}">
+  <button type="submit" class="btn btn-success mb-4">📦 Ekspor Semua Data ke CSV</button>
+</form>
+{% endif %}
+
+{% if bulan_terpilih %}
+  <h4>Data Bulan: {{ bulan_terpilih }}</h4>
+
+  <div class="row mt-4">
+    <div class="col-md-3">
+      <div class="card text-bg-primary mb-3">
+        <div class="card-body text-center">
+          <h5>Total Pembelian</h5>
+          <h4>Rp {{ data_statistik.total_pembelian|floatformat:0 }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-bg-success mb-3">
+        <div class="card-body text-center">
+          <h5>Total Penjualan</h5>
+          <h4>Rp {{ data_statistik.total_penjualan|floatformat:0 }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-bg-warning mb-3">
+        <div class="card-body text-center">
+          <h5>Total Retur</h5>
+          <h4>Rp {{ data_statistik.total_retur|floatformat:0 }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-bg-info mb-3">
+        <div class="card-body text-center">
+          <h5>Jumlah Item Stok</h5>
+          <h4>{{ data_statistik.total_stok |floatformat:0 }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert {% if data_statistik.keuntungan >= 0 %}alert-success{% else %}alert-danger{% endif %}">
+    <strong>Status:</strong> {{ data_statistik.status_keuangan }} sebesar 
+    <b>Rp {{ data_statistik.keuntungan|floatformat:0 }}</b>
+  </div>
+
+  
+
+  {% if chart_data %}
+    {{ chart_data|json_script:"chart-data" }}
+    <canvas id="chartBulanan" width="400" height="200"></canvas>
+  {% endif %}
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const el = document.getElementById('chart-data');
+  if (!el) return; // tidak ada data chart
+
+  const chartData = JSON.parse(el.textContent);
+  const labels = chartData.labels || [];
+  const values = chartData.values || [];
+
+  const ctx = document.getElementById('chartBulanan');
+  if (!ctx) return;
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Nilai Transaksi',
+        data: values,
+        backgroundColor: ['#007bff', '#28a745', '#ffc107', '#17a2b8']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: 'Grafik Perbandingan Transaksi Bulanan' }
+      }
+    }
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koperasi Maju Bersama</title>
+
+    <!-- ==== Stylesheet (gunakan static) ==== -->
+    <link rel="stylesheet" href="{% static 'assets/css/style2.css' %}">
+    <!-- Contoh tambahan: bootstrap atau plugin -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/plugins.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/kaiadmin.min.css' %}">
+</head>
+
+<body>
+
+<script>
+/* ======= Slider produk otomatis + tombol + hover pause ======= */
+(function(){
+  const slider = document.getElementById('produkSlider');
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const cards = () => Array.from(slider.querySelectorAll('.produk-card')).filter(c => c.style.display !== 'none');
+
+  function scrollToIndex(i) {
+    const visible = cards();
+    if (visible.length === 0) return;
+    if (i < 0) i = visible.length - 1;
+    if (i >= visible.length) i = 0;
+    const card = visible[i];
+    const left = card.offsetLeft - (slider.clientWidth - card.offsetWidth) / 2;
+    slider.scrollTo({ left, behavior: 'smooth' });
+    current = i;
+  }
+
+  let current = 0;
+  let autoTimer = null;
+  const AUTO_DELAY = 4000;
+
+  function startAuto() {
+    stopAuto();
+    autoTimer = setInterval(() => {
+      const visible = cards();
+      if (visible.length === 0) return;
+      current = (current + 1) % visible.length;
+      scrollToIndex(current);
+    }, AUTO_DELAY);
+  }
+  function stopAuto() { if (autoTimer) clearInterval(autoTimer); autoTimer = null; }
+
+  nextBtn.addEventListener('click', () => { current++; scrollToIndex(current); });
+  prevBtn.addEventListener('click', () => { current--; scrollToIndex(current); });
+
+  document.querySelector('.produk-slider-wrapper').addEventListener('mouseenter', stopAuto);
+  document.querySelector('.produk-slider-wrapper').addEventListener('mouseleave', startAuto);
+  slider.addEventListener('focusin', stopAuto);
+  slider.addEventListener('focusout', startAuto);
+
+  window.addEventListener('load', () => {
+    scrollToIndex(0);
+    startAuto();
+  });
+
+  window.addEventListener('resize', () => { scrollToIndex(current); });
+})();
+
+/* ======= Pencarian produk (filter) ======= */
+(function(){
+  const searchInput = document.getElementById('searchProduk');
+  const allCards = Array.from(document.querySelectorAll('.produk-card'));
+
+  function filterProducts() {
+    const q = searchInput.value.trim().toLowerCase();
+    allCards.forEach(card => {
+      const text = (card.querySelector('h3')?.innerText + ' ' + card.querySelector('p')?.innerText + ' ' + card.querySelector('.harga')?.innerText).toLowerCase();
+      card.style.display = text.includes(q) ? '' : 'none';
+    });
+    const evt = new Event('resize'); window.dispatchEvent(evt);
+  }
+
+  searchInput.addEventListener('input', filterProducts);
+})();
+</script>
+
+<header>
+    <nav class="navbar">
+        <div class="logo">Koperasi Maju Bersama</div>
+        <ul class="nav-links">
+            <li><a href="#tentang">Tentang</a></li>
+            <li><a href="#layanan">Layanan</a></li>
+            <li><a href="#kontak">Kontak</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-container">
+    <div class="hero-text">
+      <h1>Bersama Koperasi, Menuju Kemandirian Ekonomi</h1>
+      <p>
+        Bergabunglah bersama kami untuk membangun kesejahteraan bersama melalui semangat gotong royong.
+      </p>
+      <a href="dashboard-utama/" class="btn">Gabung Sekarang</a>
+    </div>
+
+    <div class="hero-image">
+      <img src="{% static 'assets/img/kampus_dago.jpg' %}" alt="Ilustrasi Koperasi">
+    </div>
+  </div>
+</section>
+
+<section id="tentang" class="tentang">
+  <h2>Tentang Kami</h2>
+  <p>Koperasi Maju Bersama berdiri untuk meningkatkan kesejahteraan anggota melalui berbagai program simpan pinjam, pelatihan usaha, dan pengembangan ekonomi lokal.</p>
+</section>
+
+<section id="layanan" class="layanan">
+  <h2>Layanan Kami</h2>
+  <div class="layanan-container">
+    <div class="card">
+      <h3>Simpan Pinjam</h3>
+      <p>Kami menyediakan layanan simpan pinjam dengan bunga rendah untuk membantu anggota mengembangkan usahanya.</p>
+    </div>
+    <div class="card">
+      <h3>Pembiayaan Usaha</h3>
+      <p>Dapatkan akses modal usaha dan bimbingan agar bisnis Anda semakin maju dan mandiri.</p>
+    </div>
+    <div class="card">
+      <h3>Pelatihan dan Edukasi</h3>
+      <p>Ikuti berbagai pelatihan keterampilan dan manajemen usaha bagi seluruh anggota koperasi.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRODUK ================= -->
+<section id="produk" class="produk">
+  <h2>Produk Koperasi Kami</h2>
+
+  <div class="produk-controls">
+    <input type="text" id="searchProduk" placeholder="Cari produk..." class="search-box" aria-label="Cari produk">
+  </div>
+
+  <div class="produk-slider-wrapper">
+    <div id="produkSlider" class="produk-track">
+
+      <div class="produk-card">
+        <img src="{% static 'assets/img/image.png' %}" alt="Beras Premium">
+        <h3>Beras Premium</h3>
+        <p>Beras kualitas terbaik hasil kerja sama dengan petani lokal.</p>
+        <span class="harga">Rp 65.000 / 5kg</span>
+      </div>
+
+      <div class="produk-card">
+        <img src="{% static 'assets/img/NescafeClassicBagKopiBubuk90gram.jpg' %}" alt="Kopi Bubuk">
+        <h3>Kopi Bubuk</h3>
+        <p>Kopi murni dari perkebunan anggota koperasi.</p>
+        <span class="harga">Rp 35.000 / 250g</span>
+      </div>
+
+      <div class="produk-card">
+        <img src="{% static 'assets/img/MerbabuGulaMerah1.png' %}" alt="Gula Merah">
+        <h3>Gula Merah Organik</h3>
+        <p>Produk manis alami yang sehat dan ramah lingkungan.</p>
+        <span class="harga">Rp 25.000 / 500g</span>
+      </div>
+
+      <div class="produk-card">
+        <img src="{% static 'assets/img/minyak.jpg' %}" alt="Minyak Goreng">
+        <h3>Minyak Goreng</h3>
+        <p>Minyak goreng kemasan hasil produksi anggota koperasi.</p>
+        <span class="harga">Rp 30.000 / 1L</span>
+      </div>
+
+      <div class="produk-card">
+        <img src="{% static 'assets/img/lifeboy.avif' %}" alt="Sabun Cuci">
+        <h3>Sabun Cuci</h3>
+        <p>Produk pembersih ramah lingkungan buatan anggota koperasi.</p>
+        <span class="harga">Rp 15.000 / pcs</span>
+      </div>
+
+      <div class="produk-card">
+        <img src="{% static 'assets/img/pupuk.png' %}" alt="Pupuk Organik">
+        <h3>Pupuk Organik</h3>
+        <p>Pupuk berkualitas tinggi untuk meningkatkan hasil panen.</p>
+        <span class="harga">Rp 50.000 / karung</span>
+      </div>
+
+      <div class="produk-card">
+        <img src="{% static 'assets/img/telor.jpg' %}" alt="Telur Ayam">
+        <h3>Telur Ayam Segar</h3>
+        <p>Telur hasil ternak peternak koperasi setiap pagi.</p>
+        <span class="harga">Rp 28.000 / kg</span>
+      </div>
+
+      <div class="produk-card">
+        <img src="{% static 'assets/img/ilustrasi-sayur.jpeg' %}" alt="Sayuran Segar">
+        <h3>Sayuran Segar</h3>
+        <p>Hasil pertanian lokal dengan kualitas premium.</p>
+        <span class="harga">Rp 10.000 / ikat</span>
+      </div>
+
+      <div class="produk-card">
+        <img src="{% static 'assets/img/buah.webp' %}" alt="Buah-buahan">
+        <h3>Buah-buahan Segar</h3>
+        <p>Buah dari kebun koperasi, manis dan segar.</p>
+        <span class="harga">Rp 20.000 / kg</span>
+      </div>
+
+      <div class="produk-card">
+        <img src="{% static 'assets/img/kerajinan.jpeg' %}" alt="Kerajinan Tangan">
+        <h3>Kerajinan Tangan</h3>
+        <p>Hasil karya anggota koperasi yang kreatif dan unik.</p>
+        <span class="harga">Rp 75.000 / item</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="agenda" class="agenda">
+  <h2>Agenda & Kegiatan Koperasi</h2>
+  <div class="agenda-grid">
+    <article class="agenda-item">
+      <time>10 Okt 2025</time>
+      <h3>Pelatihan Keuangan Mikro</h3>
+      <p>Workshop singkat tentang pencatatan usaha mikro dan pengelolaan kas.</p>
+    </article>
+    <article class="agenda-item">
+      <time>20 Okt 2025</time>
+      <h3>Rapat Anggota Tahunan</h3>
+      <p>Pembahasan laporan tahunan, pemilihan pengurus, rencana kerja.</p>
+    </article>
+    <article class="agenda-item">
+      <time>05 Nov 2025</time>
+      <h3>Workshop Kewirausahaan UMKM</h3>
+      <p>Mentoring pemasaran digital untuk anggota koperasi.</p>
+    </article>
+  </div>
+</section>
+
+<section class="satgas">
+  <h2>Satuan Tugas Koperasi</h2>
+  <div class="satgas-logos">
+      <img src="{% static 'assets/img/lg-661102b2055f1-Kementerian-BUMN.webp' %}" alt="Logo 1">
+      <img src="{% static 'assets/img/Lambang_Kementerian_Koordinator_Bidang_Pangan.svg.png' %}" alt="Logo 2">
+      <img src="{% static 'assets/img/logo-komdigi-l-min.jpg' %}" alt="Logo 3">
+      <img src="{% static 'assets/img/Logo_Kementerian_Kesehatan.svg.png' %}" alt="Logo 4">
+      <img src="{% static 'assets/img/badan.png' %}" alt="Logo 5">
+      <img src="{% static 'assets/img/polman.png' %}" alt="Logo 6">
+      <img src="{% static 'assets/img/badan gizi.jpg' %}" alt="Logo 7">
+  </div>
+</section>
+
+<section id="lokasi" class="lokasi">
+  <h2>Lokasi Kami</h2>
+  <div class="lokasi-map">
+    <iframe
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.78670239937!2d107.60787477475741!3d-6.914197169462246!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e693b0b2c5f9b9b%3A0xfc0f2b3e9f2d9be7!2sPolman%20Bandung%20(Politeknik%20Manufaktur%20Negeri%20Bandung)!5e0!3m2!1sid!2sid!4v1699999999999!5m2!1sid!2sid"
+  width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy">
+</iframe>
+
+  </div>
+</section>
+
+<section id="kontak" class="kontak">
+  <h2>Kontak Kami</h2>
+  <a href="#" class="btn">Hubungi Kami</a>
+  <p>Email: info@koperasimaju.com | Telepon: (021) 555-6789</p>
+</section>
+
+<footer>
+  <p>© 2025 Koperasi Maju Bersama. Semua Hak Dilindungi.</p>
+</footer>
+
+</body>
+</html>

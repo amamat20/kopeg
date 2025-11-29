@@ -1,0 +1,90 @@
+{% extends 'base_part.html' %}
+{% load static %}
+
+{% block title %}Daftar SparePart{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1 class="mb-4">Tambah Data SparePart</h1>
+    
+    <form method="POST" enctype="multipart/form-data" autocomplete="off" id="player-form">
+
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label for="nama" class="form-label">Nama part:</label>
+        <input 
+          type="text" 
+          id="nama" 
+          name="nama" 
+          class="form-control" 
+          required 
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="harga" class="form-label">harga:</label>
+        <input 
+          type="text" 
+          id="harga" 
+          name="harga" 
+          class="form-control" 
+          required 
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="stok" class="form-label">stok:</label>
+        <input 
+          type="text" 
+          id="stok" 
+          name="stok" 
+          class="form-control" 
+          required 
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="supplier" class="form-label">supplier:</label>
+        <input 
+          type="text" 
+          id="supplier" 
+          name="supplier" 
+          class="form-control" 
+          required 
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="kondisi" class="form-label">kondisi:</label>
+        <select 
+          id="kondisi" 
+          name="kondisi" 
+          class="form-select" 
+          required
+        >
+          <option value="">Pilih...</option>
+          <option value="Baru">Baru</option>
+          <option value="Bekas">Bekas</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="foto_part" class="form-label">Cover part:</label>
+            <input 
+                type="file" 
+                id="foto_part" 
+                name="foto_part" 
+                class="form-control" 
+                accept="image/*" 
+                required
+            />
+      </div>
+
+
+      <button type="submit" class="btn btn-success">Simpan</button>
+      <a href="{% url 'get_all_part' %}" class="btn btn-secondary">Batal</a>
+    </form>
+  </div>
+
+ {% endblock %}

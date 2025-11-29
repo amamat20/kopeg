@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Tambah Data Pembelian</h2>
+<form method="post">
+  {% csrf_token %}
+  <input type="text" name="Kode_Item" placeholder="Kode Item" class="form-control mb-2" required>
+  <input type="text" name="Nama_Item" placeholder="Nama Item" class="form-control mb-2" required>
+  <input type="text" name="Jenis" placeholder="Jenis" class="form-control mb-2" required>
+  <input type="number" name="Jumlah" placeholder="Jumlah" class="form-control mb-2" required>
+  <input type="text" name="Satuan" placeholder="Satuan" class="form-control mb-2" required>
+  <input type="number" name="Total_Harga" placeholder="Total Harga" class="form-control mb-2" required>
+  <input type="text" name="Bulan" placeholder="Bulan" class="form-control mb-2" required>
+  <input type="text" name="Tahun" placeholder="Tahun" class="form-control mb-2" required>
+  <button type="submit" class="btn btn-success">Simpan</button>
+  <a href="{% url 'get_all_pembelian' %}" class="btn btn-secondary">Batal</a>
+</form>
+{% endblock %}

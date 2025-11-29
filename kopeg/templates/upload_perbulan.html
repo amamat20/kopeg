@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Upload Data Bulanan{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📅 Upload Data Transaksi Per Bulan & Tahun</h2>
+
+<form method="post" enctype="multipart/form-data" class="p-4 border rounded bg-light shadow-sm">
+  {% csrf_token %}
+  
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="bulan" class="form-label">Pilih Bulan:</label>
+      <select id="bulan" name="bulan" class="form-select" required>
+        <option value="">-- Pilih Bulan --</option>
+        {% for b in daftar_bulan %}
+          <option value="{{ b }}" {% if bulan_terpilih == b %}selected{% endif %}>{{ b }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="tahun" class="form-label">Pilih Tahun:</label>
+      <select id="tahun" name="tahun" class="form-select" required>
+        <option value="">-- Pilih Tahun --</option>
+        {% for t in daftar_tahun %}
+          <option value="{{ t }}" {% if tahun_terpilih == t %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Upload File Pembelian (.csv)</label>
+    <input type="file" name="pembelian_csv" class="form-control" accept=".csv">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Upload File Penjualan (.csv)</label>
+    <input type="file" name="penjualan_csv" class="form-control" accept=".csv">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Upload File Retur (.csv / .xlsx)</label>
+    <input type="file" name="retur_file" class="form-control" accept=".csv, .xlsx">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Upload File Stok Opname (.xlsx)</label>
+    <input type="file" name="stok_file" class="form-control" accept=".xlsx">
+  </div>
+
+  <button type="submit" class="btn btn-success mt-3">🚀 Upload Semua Data</button>
+</form>
+
+{% if message %}
+  <div class="alert alert-info mt-4">{{ message|safe }}</div>
+{% endif %}
+{% endblock %}

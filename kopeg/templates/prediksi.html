@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Prediksi Stok Bulan Berikutnya{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">📦 Prediksi Stok yang Akan Dibutuhkan Bulan Berikutnya</h2>
+
+  {% if message %}
+    <div class="alert alert-warning">{{ message }}</div>
+  {% else %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <h4 class="card-title">Total Prediksi Stok Bulan Depan</h4>
+        <h2 class="text-success">🧮 {{ total_prediksi }} pcs</h2>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-hover" id="prediksi-table">
+        <thead class="table-dark">
+          <tr>
+            <th>Nama Item</th>
+            <th>Prediksi Kebutuhan Stok (pcs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in prediksi %}
+          <tr>
+            <td>{{ item.Nama_Item }}</td>
+            <td>{{ item.Prediksi_Stok }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('#prediksi-table').DataTable({
+      "pageLength": 10,
+      "order": [[1, "desc"]],
+      "language": {
+        "search": "Cari item:",
+        "lengthMenu": "Tampilkan _MENU_ item per halaman",
+      }
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Stok Opname{% endblock %}
+{% block content %}
+<h2 class="mb-4">📦 Dashboard Stok Opname</h2>
+
+<form method="get" class="mb-4">
+  <div class="row g-2">
+    <div class="col-auto">
+      <select name="bulan" class="form-select" required>
+        <option value="">-- Pilih Bulan --</option>
+        {% for b in daftar_bulan %}
+          <option value="{{ b }}" {% if bulan_terpilih == b %}selected{% endif %}>{{ b }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-auto">
+      <select name="tahun" class="form-select" required>
+        <option value="">-- Pilih Tahun --</option>
+        {% for t in daftar_tahun %}
+          <option value="{{ t }}" {% if tahun_terpilih == t %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Tampilkan</button>
+    </div>
+  </div>
+</form>
+
+{% if bulan_terpilih and tahun_terpilih %}
+  <div class="card mt-3">
+    <div class="card-body">
+      <h5>Total Stok Fisik: <b>{{ total_stok|floatformat:0 }}</b></h5>
+    </div>
+  </div>
+
+  <div class="table-responsive mt-3">
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Kode Barcode</th>
+          <th>Nama Barang</th>
+          <th>Stok Fisik</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in data_stok %}
+        <tr>
+          <td>{{ s.Kode_Barcode }}</td>
+          <td>{{ s.Nama_Barang }}</td>
+          <td>{{ s.Stok_Fisik|floatformat:0 }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="text-center">Tidak ada data stok.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if data_stok %}
+  {{ data_stok|json_script:"stok-data" }}
+  <canvas id="stokChart" height="120"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const dataStok = JSON.parse(document.getElementById("stok-data").textContent);
+    const ctx = document.getElementById("stokChart").getContext("2d");
+    const labels = dataStok.map(s => s.Nama_Barang);
+    const values = dataStok.map(s => s.Stok_Fisik);
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Stok Fisik per Barang',
+          data: values,
+          backgroundColor: '#17a2b8'
+        }]
+      },
+      options: {
+        plugins: {
+          title: { display: true, text: 'Grafik Stok Fisik per Barang' },
+          legend: { display: false }
+        }
+      }
+    });
+  </script>
+  {% endif %}
+{% endif %}
+{% endblock %}

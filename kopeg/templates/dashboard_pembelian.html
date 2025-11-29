@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Pembelian{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📦 Dashboard Pembelian</h2>
+
+<!-- Pilih bulan & tahun -->
+<form method="get" class="mb-4">
+  <div class="row g-2">
+    <div class="col-auto">
+      <select name="bulan" class="form-select" required>
+        <option value="">-- Pilih Bulan --</option>
+        {% for b in daftar_bulan %}
+          <option value="{{ b }}" {% if bulan_terpilih == b %}selected{% endif %}>{{ b }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-auto">
+      <select name="tahun" class="form-select" required>
+        <option value="">-- Pilih Tahun --</option>
+        {% for t in daftar_tahun %}
+          <option value="{{ t }}" {% if tahun_terpilih == t %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Tampilkan</button>
+    </div>
+  </div>
+</form>
+
+{% if bulan_terpilih and tahun_terpilih %}
+  <h4>📅 Data Pembelian {{ bulan_terpilih }} {{ tahun_terpilih }}</h4>
+
+  <div class="card mt-3">
+    <div class="card-body">
+      <h5>Total Pembelian: <b>Rp {{ total_pembelian|floatformat:0 }}</b></h5>
+    </div>
+  </div>
+
+  <div class="col-md-12">
+  <div class="card">
+  <div class="table-responsive">
+    <table class="display table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Kode Item</th>
+          <th>Nama Item</th>
+          <th>Jenis</th>
+          <th>Jumlah</th>
+          <th>Satuan</th>
+          <th>Total Harga</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in data_pembelian %}
+          <tr>
+            <td>{{ d.Kode_Item }}</td>
+            <td>{{ d.Nama_Item }}</td>
+            <td>{{ d.Jenis }}</td>
+            <td>{{ d.Jumlah }}</td>
+            <td>{{ d.Satuan }}</td>
+            <td>Rp {{ d.Total_Harga|floatformat:0 }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="6" class="text-center">Tidak ada data untuk bulan ini.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  </div>
+  </div>
+
+  {% if data_pembelian %}
+    {{ data_pembelian|json_script:"pembelian-data" }}
+    <canvas id="pembelianChart" height="120"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const dataPembelian = JSON.parse(document.getElementById("pembelian-data").textContent);
+      const ctx = document.getElementById("pembelianChart").getContext("2d");
+
+      const labels = dataPembelian.map(d => d.Nama_Item);
+      const values = dataPembelian.map(d => d.Total_Harga);
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Total Harga per Item',
+            data: values,
+            backgroundColor: '#007bff'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: { display: true, text: 'Grafik Pembelian per Item' },
+            legend: { display: false }
+          },
+          scales: {
+            x: { ticks: { autoSkip: false, maxRotation: 45, minRotation: 0 } }
+          }
+        }
+      });
+    </script>
+  {% endif %}
+{% endif %}
+{% endblock %}

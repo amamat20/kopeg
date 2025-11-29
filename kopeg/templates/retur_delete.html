@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Hapus Data Retur</h2>
+<p>Yakin ingin menghapus data ini?</p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Hapus</button>
+  <a href="{% url 'get_all_retur' %}" class="btn btn-secondary">Batal</a>
+</form>
+{% endblock %}

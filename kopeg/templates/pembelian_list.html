@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+{% block title %}Data Pembelian{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">Data Pembelian</h2>
+
+<!-- Info jumlah data -->
+{% if query %}
+  <p>Menampilkan {{ filtered_count }} dari {{ total_data }} data untuk pencarian: "{{ query }}"</p>
+{% else %}
+  <p>Menampilkan semua {{ total_data }} data.</p>
+{% endif %}
+
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex align-items-center">
+        <h4 class="card-title">Tabel Data Pembelian Overall</h4>
+        <button 
+          class="btn btn-primary btn-round ms-auto"
+          data-bs-toggle="modal"
+          data-bs-target="#addRowModal"
+        >
+          <i class="fa fa-plus"></i> Tambah Data
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- 🔹 Filter Harga -->
+      <form method="get" class="row g-2 mb-3">
+        {% if request.GET.q %}
+          <input type="hidden" name="q" value="{{ request.GET.q }}">
+        {% endif %}
+        <div class="col-auto">
+          <input type="number" name="min_harga" class="form-control"
+                 placeholder="Harga > ..."
+                 value="{{ request.GET.min_harga }}">
+        </div>
+        
+      </form>
+
+      <!-- 🔹 Modal Tambah Data -->
+      <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header border-0">
+              <h5 class="modal-title">
+                <span class="fw-mediumbold">Tambah</span>
+                <span class="fw-light"> Data Pembelian</span>
+              </h5>
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method="post" action="{% url 'add_pembelian' %}">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-sm-12 mb-2">
+                    <label>Kode Item</label>
+                    <input name="Kode_Item" type="text" class="form-control" placeholder="Masukkan kode item" required>
+                  </div>
+                  <div class="col-sm-12 mb-2">
+                    <label>Nama Item</label>
+                    <input name="Nama_Item" type="text" class="form-control" placeholder="Masukkan nama item" required>
+                  </div>
+                  <div class="col-md-6 mb-2">
+                    <label>Jenis</label>
+                    <input name="Jenis" type="text" class="form-control" placeholder="Jenis barang">
+                  </div>
+                  <div class="col-md-6 mb-2">
+                    <label>Jumlah</label>
+                    <input name="Jumlah" type="number" class="form-control" placeholder="Jumlah">
+                  </div>
+                  <div class="col-md-6 mb-2">
+                    <label>Satuan</label>
+                    <input name="Satuan" type="text" class="form-control" placeholder="Satuan">
+                  </div>
+                  <div class="col-md-6 mb-2">
+                    <label>Total Harga</label>
+                    <input name="Total_Harga" type="number" class="form-control" placeholder="Total harga">
+                  </div>
+                  <div class="col-md-6 mb-2">
+                    <label>Bulan</label>
+                    <input name="Bulan" type="text" class="form-control" placeholder="Contoh: Agustus">
+                  </div>
+                  <div class="col-md-6 mb-2">
+                    <label>Tahun</label>
+                    <input name="Tahun" type="text" class="form-control" placeholder="Contoh: 2024">
+                  </div>
+                </div>
+                <div class="modal-footer border-0">
+                  <button type="submit" class="btn btn-primary">Simpan</button>
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔹 Tabel Data -->
+      <div class="table-responsive">
+        <table id="pembelian-table" class="display table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Kode Item</th>
+              <th>Nama Item</th>
+              <th>Jenis</th>
+              <th>Jumlah</th>
+              <th>Satuan</th>
+              <th>Total Harga</th>
+              <th>Bulan</th>
+              <th>Tahun</th>
+              <th style="width: 10%">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in pembelian %}
+            <tr>
+              <td>{{ p.Kode_Item }}</td>
+              <td>{{ p.Nama_Item }}</td>
+              <td>{{ p.Jenis }}</td>
+              <td>{{ p.Jumlah }}</td>
+              <td>{{ p.Satuan }}</td>
+              <td>Rp {{ p.Total_Harga|floatformat:0 }}</td>
+              <td>{{ p.Bulan }}</td>
+              <td>{{ p.Tahun }}</td>
+              <td>
+                <div class="form-button-action">
+                  <a href="{% url 'edit_pembelian' p.id %}" class="btn btn-link btn-primary btn-lg" title="Edit">
+                    <i class="fa fa-edit"></i>
+                  </a>
+                  <a href="{% url 'delete_pembelian' p.id %}?page={{ page_obj.number }}"
+   class="btn btn-link btn-danger"
+   title="Hapus"
+   onclick="return confirm('Yakin ingin menghapus data ini?');">
+   <i class="fa fa-times"></i>
+</a>
+
+
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="9" class="text-center">Tidak ada data ditemukan.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    // Inisialisasi DataTable dengan multi-state sorting
+    var table = $("#pembelian-table").DataTable({
+      pageLength: 10,
+      dom:
+        '<"row mb-3"<"col-sm-6"l><"col-sm-6 d-flex justify-content-end"f>>t<"row"<"col-sm-6"i><"col-sm-6"p>>',
+      language: {
+        search: "Filter Harga:", // Ganti label search
+      },
+      orderMulti: true, // aktifkan multi kolom sorting
+      order: [], // default: tidak ada urutan
+
+      // Tambahkan siklus 3 tahap: asc -> desc -> none
+      columnDefs: [
+        { targets: '_all', orderSequence: ["asc", "desc", ""] }
+      ],
+
+      initComplete: function () {
+        // Ganti input search jadi input angka
+        var searchInput = $('div.dataTables_filter input');
+        searchInput.attr({
+          type: 'number',
+          name: 'min_harga',
+          placeholder: 'Harga > ...',
+          min: 0,
+          class: 'form-control form-control-sm ms-2',
+        });
+
+        // Filter harga langsung ketika diketik
+        searchInput.on('input', function () {
+          var val = parseFloat(this.value) || 0;
+          $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+            var harga = parseFloat(data[5].replace(/[^\d.-]/g, '')) || 0;
+            return harga >= val;
+          });
+          table.draw();
+          $.fn.dataTable.ext.search.pop();
+        });
+      },
+    });
+
+    // Optional: reset urutan ke default saat klik kanan di header
+    $('#pembelian-table thead th').on('contextmenu', function (e) {
+      e.preventDefault();
+      table.order([]).draw();
+    });
+  });
+</script>
+
+<!-- PAGINATION -->
+<!-- PAGINATION -->
+<nav aria-label="Page navigation">
+<ul class="pagination justify-content-center">
+  {% if page_obj.has_previous %}
+    <li class="page-item">
+      <a class="page-link"
+         href="?page=1{% if query %}&q={{ query }}{% endif %}{% if min_harga %}&min_harga={{ min_harga }}{% endif %}">
+         « First
+      </a>
+    </li>
+    <li class="page-item">
+      <a class="page-link"
+         href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if min_harga %}&min_harga={{ min_harga }}{% endif %}">
+         ‹ Prev
+      </a>
+    </li>
+  {% endif %}
+
+  {% for num in page_obj.paginator.page_range %}
+    {% if num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+      {% if num == page_obj.number %}
+        <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+      {% else %}
+        <li class="page-item">
+          <a class="page-link"
+             href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if min_harga %}&min_harga={{ min_harga }}{% endif %}">
+             {{ num }}
+          </a>
+        </li>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+
+  {% if page_obj.has_next %}
+    <li class="page-item">
+      <a class="page-link"
+         href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if min_harga %}&min_harga={{ min_harga }}{% endif %}">
+         Next ›
+      </a>
+    </li>
+    <li class="page-item">
+      <a class="page-link"
+         href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if min_harga %}&min_harga={{ min_harga }}{% endif %}">
+         Last »
+      </a>
+    </li>
+  {% endif %}
+</ul>
+
+  <!-- 🔹 Tambahkan Form "Loncat ke Halaman" -->
+  <form method="get" class="d-flex justify-content-center align-items-center mt-3">
+    <label for="pageInput" class="me-2">Loncat ke halaman:</label>
+    <input type="number" id="pageInput" name="page"
+           min="1" max="{{ page_obj.paginator.num_pages }}"
+           class="form-control form-control-sm w-auto me-2"
+           required>
+    {% if query %}
+      <input type="hidden" name="q" value="{{ query }}">
+    {% endif %}
+    {% if min_harga %}
+      <input type="hidden" name="min_harga" value="{{ min_harga }}">
+    {% endif %}
+  </form>
+</nav>
+
+{% endblock %}
